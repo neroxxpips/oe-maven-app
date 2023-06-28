@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oe-maven-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oe-maven-app
+  template:
+    metadata:
+      labels:
+        app: oe-maven-app
+    spec:
+      containers:
+        name:  oe-maven-app
+        - image:  neroxxpips/oe-maven-appe:latest
+        ports:
+        - containerPort: 8080
+
