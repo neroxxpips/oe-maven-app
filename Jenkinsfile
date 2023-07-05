@@ -28,22 +28,22 @@ pipeline {
                 DOCKER_IMAGE_TAG = 'latest'
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
             }
-            steps {
-                sh 'sudo docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh 'sudo docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
-                sh 'docker logout'
-              }
-
             // steps {
-            //     // Authenticate with Docker
-            //     withDockerRegistry([credentialsId: 'dockerhub', url: 'https://hub.docker.com']) {
-            //         // Build Docker image
-            //         sh 'docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
-            //         // Push Docker image
-            //         sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
-            //     }
-            // }
+            //     sh 'sudo docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
+            //     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            //     sh 'sudo docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
+            //     sh 'docker logout'
+            //   }
+
+            steps {
+                // Authenticate with Docker
+                withDockerRegistry([credentialsId: 'dockerhub', url: 'https://hub.docker.com']) {
+                    // Build Docker image
+                    sh 'docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
+                    // Push Docker image
+                    sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
+                }
+            }
         }
 
     stage('Integrate Jenkins with EKS Cluster and Deploy App') {
