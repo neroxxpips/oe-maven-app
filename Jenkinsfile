@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+      DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    }
+    
     stages {
         stage('Build') {
             steps {
@@ -19,38 +23,27 @@ pipeline {
         //     }
         // }
 
-        // stage('Build and Push Docker Image') {
-        //     environment {
-        //         DOCKER_REGISTRY = 'neroxxpips'
-        //         DOCKER_IMAGE_NAME = 'oe-maven-app'
-        //         DOCKER_IMAGE_TAG = 'latest'
-        //     }
+        
 
-        //     steps {
-        //         // Authenticate with Docker
-        //         withDockerRegistry([credentialsId: 'your-docker-credentials-id', url: 'https://hub.docker.com/']) {
-        //             // Build Docker image
-        //             sh 'docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
+        stage('Build and Push Docker Image') {
+            environment {
+                DOCKER_REGISTRY = 'neroxxpips'
+                DOCKER_IMAGE_NAME = 'oe-maven-app'
+                DOCKER_IMAGE_TAG = 'latest'
+            }
 
-        //             // Push Docker image
-        //             sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
-        //         }
-        //     }
-        // }
+            steps {
+                // Authenticate with Docker
+                withDockerRegistry([credentialsId: 'dockerhub', url: 'https://hub.docker.com']) {
+                    // Build Docker image
+                    sh 'docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
 
-        // stage('Deploy to Kubernetes') {
-        //     environment {
-        //         KUBECONFIG = credentials('kubeconfig-credentials')
-        //     }
+                    // Push Docker image
+                    sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG'
+                }
+            }
+        }
 
-        //     steps {
-        //         // Set kubeconfig file for kubectl
-        //         sh 'echo "$KUBECONFIG" > kubeconfig.yaml'
-
-        //         // Apply Kubernetes deployment and service manifests
-        //         sh 'kubectl apply -f deployment.yaml -f service.yaml --kubeconfig=kubeconfig.yaml'
-        //     }
-        // }
     stage('Integrate Jenkins with EKS Cluster and Deploy App') {
             environment {
                 EKS_CLUSTER_NAME = 'OE-DevOps-cluster'
