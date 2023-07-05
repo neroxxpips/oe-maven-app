@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         name:  oe-maven-app
-        - image:  neroxxpips/oe-maven-appe:latest
+        - image:  neroxxpips/oe-maven-app:latest
         ports:
         - containerPort: 8080
 
