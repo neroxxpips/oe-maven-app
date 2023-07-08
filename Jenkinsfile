@@ -8,7 +8,7 @@ pipeline {
                 checkout scm
 
                 // Build Maven application
-                // sh 'mvn clean install'
+                sh 'mvn clean install'
             }
         }
 
